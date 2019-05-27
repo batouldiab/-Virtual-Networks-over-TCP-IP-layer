@@ -1,6 +1,9 @@
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.Socket;
 import java.net.UnknownHostException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
@@ -16,10 +19,11 @@ public class Host extends UnicastRemoteObject implements IHost {
 	static InetAddress selfIP;
 	static InetAddress connectedRouter;
 	private static IRouter look_up;
-
+	Scanner in;
+	PrintWriter out;
+	Socket socket;
 	protected Host() throws RemoteException {
-		super();
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	@Override
@@ -47,7 +51,6 @@ public class Host extends UnicastRemoteObject implements IHost {
 			connectedRouter = InetAddress.getByName(routerip);
 			// rmi connect to register host in router
 			look_up = (IRouter) Naming.lookup("//localhost/MyRouter" + connectedRouter);
-
 			String response = look_up.hostConnect(selfIP);
 
 			return "success";
@@ -86,6 +89,7 @@ public class Host extends UnicastRemoteObject implements IHost {
 			Scanner input = new Scanner(System.in);
 			String m = "";
 			InetAddress dest;
+			
 			// get new request
 			while (true) {
 				System.out.println("Enter the message:\n");
